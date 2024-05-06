@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 
-function CharactersPopup({ position, sideOrientation, topOrientation, onSelectCharacter }) {
-    let characters = ['Waldo', 'The Wizard', 'Wilma', 'Odlaw'];
+function CharactersPopup({ position, sideOrientation, topOrientation, onSelectCharacter, characters }) {
     
     const getTop = () => {
         if (topOrientation === "top") {
@@ -23,7 +22,6 @@ function CharactersPopup({ position, sideOrientation, topOrientation, onSelectCh
         }
     }
 
-
     return (
       <div
         className="character-popup"
@@ -36,15 +34,15 @@ function CharactersPopup({ position, sideOrientation, topOrientation, onSelectCh
         <ul className="character-popup">
           {characters.map((character) => (
             <li
-              key={character}
+              key={character.name}
               className="character"
               onClick={() => onSelectCharacter(character, position)}
             >
               <img
-                src={`./src/assets/images/${character}.jpeg`}
-                alt={character}
-                className="character-icon"
-              />
+                src={`./src/assets/images/${character.name}.jpeg`}
+                alt={character.name}
+                className={character.isFound ? "character-icon character-found" : "character-icon"}
+                />
             </li>
           ))}
         </ul>
@@ -60,6 +58,7 @@ function CharactersPopup({ position, sideOrientation, topOrientation, onSelectCh
     sideOrientation: PropTypes.oneOf(['left', 'right']).isRequired,
     topOrientation: PropTypes.oneOf(['top', 'bottom']).isRequired,
     onSelectCharacter: PropTypes.func.isRequired,
+    characters: PropTypes.arrayOf(PropTypes.object).isRequired,
   };
   
 
