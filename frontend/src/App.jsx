@@ -1,12 +1,10 @@
-// App.jsx
-
 import { useState } from 'react';
 import './App.css';
 import ImageDisplay from './components/ImageDisplay';
 import CharacterList from './components/CharacterList';
 
 function App() {
-  const [selectedCharacter, setSelectedCharacter] = useState(null);
+  const [foundCharacters, setFoundCharacters] = useState([]);
 
   const checkCharacterLocation = (character, position) => {
     // Make API request to backend
@@ -21,58 +19,51 @@ function App() {
       .then(response => response.json())
       .then(data => {
         // Handle response from backend
-        console.log("data", data);
+        console.log("data", data.characterFound);
         // Update UI based on response
-        if (data !== null) {
+        if (data.characterFound !== null) {
           console.log("Character found")
-        setSelectedCharacter("found")
-        console.log(selectedCharacter)
-      }
-        markFoundCharacter()
+          markFoundCharacter(data.characterFound)
+        }
       })
       .catch(error => {
         console.error('Error:', error);
       });
   };
 
-  function markFoundCharacter() {
-    console.log("test", selectedCharacter)
-    if(selectedCharacter !== null) {
-      console.log(selectedCharacter),
-      setSelectedCharacter(null)
-    } else {
-      console.log("is null")
-    }
+  function markFoundCharacter(character) {
+    setFoundCharacters([...foundCharacters, character]);
   }
+
+  const characters = [{
+    name: "Waldo",
+    isFound: false,
+    xCoordinate: 385,
+    yCoordinate: 610
+  }, {
+    name: "The Wizard",
+    isFound: false,
+    xCoordinate: 740,
+    yCoordinate: 575
+  }, {
+    name: "Wilma",
+    isFound: false,
+    xCoordinate: 280,
+    yCoordinate: 540
+  }, {
+    name: "Odlaw",
+    isFound: true,
+    xCoordinate: 70,
+    yCoordinate: 650
+  }];
 
   return (
     <div>
       <h1>Where&apos;s Waldo</h1>
-      <CharacterList characters={['Waldo', 'The Wizard', 'Wilma', 'Odlaw']} />
-      <ImageDisplay selectedCharacter={selectedCharacter} checkCharacterLocation={checkCharacterLocation} />
+      <CharacterList characters={characters} />
+      <ImageDisplay foundCharacters={foundCharacters} checkCharacterLocation={checkCharacterLocation} characters={characters} />
     </div>
   );
 }
 
 export default App;
-
-
-
-  // const calculateScaledCoordinates = ({ x, y }) => {
-  //   const refScreenWidth = 1280;
-  //   const refScreenHeight = 800;
-
-
-  //   const currentScreenWidth = window.screen.availWidth;
-  //   const currentScreenHeight = window.screen.availHeight;
-
-  //   console.log(window.screen)
-
-  //   const widthScale = currentScreenWidth / refScreenWidth;
-  //   const heightScale = currentScreenHeight / refScreenHeight;
-
-  //   const scaledX = Math.round(x * widthScale);
-  //   const scaledY = Math.round(y * heightScale);
-
-  //   return { x: scaledX, y: scaledY };
-  // }
