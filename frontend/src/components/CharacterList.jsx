@@ -6,9 +6,9 @@ function CharacterList({ characters }) {
         <h2 className="character-list-title">Characters</h2>
       <ul className="character-list">
         {characters.map((character) => (
-          <li key={character} className="character">
-            {character}
-            <img src={`./src/assets/images/${character}.jpeg`} alt={character} className="character-icon" />
+          <li key={character.name} className="character">
+            {character.name}
+            <img src={`./src/assets/images/${character.name}.jpeg`} alt={character} className="character-icon" />
           </li>
         ))}
       </ul>
@@ -17,7 +17,7 @@ function CharacterList({ characters }) {
 }
 
 CharacterList.propTypes = {
-    characters: PropTypes.arrayOf(PropTypes.string).isRequired,
+    characters: PropTypes.arrayOf(PropTypes.object).isRequired,
   };
   
 
