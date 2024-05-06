@@ -3,16 +3,14 @@ import TargetBox from './TargetBox';
 import CharactersPopup from './CharactersPopup';
 import PropTypes from 'prop-types';
 
-function ImageDisplay({selectedCharacter, checkCharacterLocation}) {
+function ImageDisplay({foundCharacters, selectedCharacter, checkCharacterLocation, characters}) {
     const imageRef = useRef(null);
     const [targetBoxPosition, setTargetBoxPosition] = useState(null);
-    // const [selectedCharacter, setSelectedCharacter] = useState(null);
-    const [popupSideOrientation, setPopupSideOrientation] = useState('right'); // Default orientation
-    const [popupTopOrientation, setPopupTopOrientation] = useState('top'); // Default orientation
+    const [popupSideOrientation, setPopupSideOrientation] = useState('right');
+    const [popupTopOrientation, setPopupTopOrientation] = useState('top');
 
     useEffect(() => {
         function handleResize() {
-            // Recalculate popup position on window resize
             if (targetBoxPosition) {
                 calculatePopupOrientation(targetBoxPosition);
             }
@@ -41,46 +39,58 @@ function ImageDisplay({selectedCharacter, checkCharacterLocation}) {
         }
     }
 
-
     const handleImageClick = (event) => {
         const x = event.pageX;
         const y = event.pageY;
-
+        console.log(event.view.screen)
         setTargetBoxPosition({x, y});
         calculatePopupOrientation({x, y});
     };
 
     const handleCharacterClick = (character, position) => {
-      console.log("position", position)
-
       checkCharacterLocation(character, position)
       setTargetBoxPosition(null);
     };
 
+    const renderCircles = () => {
+      return foundCharacters.map((character, index) => (
+        <div
+            key={index}
+            className="circle"
+            style={{ left: character.xCoordinate - 18, top: character.yCoordinate - 18 }}
+        />
+      ));
+    };
+
+
     return (
         <div>
-            <img
-                ref={imageRef}
-                src="./src/assets/images/image3.jpeg"
-                alt="Photo"
-                onClick={handleImageClick}
+          <img
+            ref={imageRef}
+            src="./src/assets/images/image3.jpeg"
+            alt="Photo"
+            onClick={handleImageClick}
+          />
+          {renderCircles()}
+          {targetBoxPosition && <TargetBox position={targetBoxPosition} />}
+          {targetBoxPosition && !selectedCharacter && (
+            <CharactersPopup
+              position={targetBoxPosition}
+              sideOrientation={popupSideOrientation}
+              topOrientation={popupTopOrientation}
+              onSelectCharacter={handleCharacterClick}
+              characters={characters}
             />
-            {targetBoxPosition && <TargetBox position={targetBoxPosition} />}
-            {targetBoxPosition && !selectedCharacter && (
-                <CharactersPopup
-                    position={targetBoxPosition}
-                    sideOrientation={popupSideOrientation}
-                    topOrientation={popupTopOrientation}
-                    onSelectCharacter={handleCharacterClick}
-                />
-            )}
+          )}
         </div>
     );
 }
 
 ImageDisplay.propTypes = {
   selectedCharacter: PropTypes.string,
-  checkCharacterLocation: PropTypes.func.isRequired
+  foundCharacters: PropTypes.arrayOf(PropTypes.object).isRequired,
+  checkCharacterLocation: PropTypes.func.isRequired,
+  characters: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default ImageDisplay;
